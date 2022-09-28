@@ -5,28 +5,42 @@
 //  Created by Jaden Hong on 2022-09-20.
 //
 
-import UIKit 
+import UIKit
+import FirebaseCore
+import FirebaseFirestore
+import FirebaseAuth
 
 class LoginViewController: UIViewController {
     
-    let tempEmail = "email"
-    let tempPassword = "password"
-    
-    @IBOutlet weak var email: UITextField! 
-    @IBOutlet weak var password: UITextField!
+    @IBOutlet weak var emailTextfield: UITextField!
+    @IBOutlet weak var passwordTextfield: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        
     }
     
     
     
     @IBAction func loginButtonPressed(_ sender: UIButton) {
         
+        if let email = emailTextfield.text, let password = passwordTextfield.text {
+            Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+              guard let strongSelf = self else { return }
+                
+                if let error = error {
+                    print("JADEN: Login failed: \(error.localizedDescription)")
+                } else {
+                    print("JADEN: Authenticated!")
+                    strongSelf.performSegue(withIdentifier: Constants.segueIdentifiers.LoginToChat, sender: self)
+                }
+                
+            }
+        }
         
-        performSegue(withIdentifier: Constants.segueIdentifiers.LoginToChat, sender: nil)
+        
+        
         
         
     }
